@@ -2,9 +2,13 @@ package com.example.mytaskflow.ui
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+// --- ИЗМЕНЕНИЕ ---
+// 1. Импортируем AutoMirrored.Filled.List
+import androidx.compose.material.icons.automirrored.filled.List
+// --- КОНЕЦ ИЗМЕНЕНИЯ ---
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
+// import androidx.compose.material.icons.filled.List // 2. Удаляем или комментируем старый импорт
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -38,7 +42,10 @@ val bottomNavItems = listOf(
     ),
     BottomNavItem(
         label = "Задачи",
-        icon = Icons.Filled.List,
+        // --- ИЗМЕНЕНИЕ ---
+        // 3. Используем новую иконку
+        icon = Icons.AutoMirrored.Filled.List,
+        // --- КОНЕЦ ИЗМЕНЕНИЯ ---
         screen = Screen.Tasks
     ),
     BottomNavItem(

@@ -1,7 +1,11 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+// Файл: build.gradle.kts (в корне проекта)
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.kotlin.android) apply false
-    // --- СТРОКА 'alias(libs.plugins.kotlin.compose)' ОТСЮДА УДАЛЕНА (как и было в репозитории) ---
-    id("com.google.devtools.ksp") version "1.9.22-1.0.17" apply false
+
+    // --- ИСПРАВЛЕНИЕ ---
+    // Теперь этот alias (псевдоним) существует в libs.versions.toml,
+    // и Gradle найдет его.
+    alias(libs.plugins.ksp) apply false
+    // --- КОНЕЦ ИСПРАВЛЕНИЯ ---
 }

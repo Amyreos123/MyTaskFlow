@@ -13,6 +13,11 @@ lifecycleRuntimeKtx = "2.8.0"
 material3 = "1.2.1"
 navigationCompose = "2.7.7"
 room = "2.6.1"
+# --- НОВОЕ ---
+# Версия KSP должна соответствовать версии Kotlin.
+# 1.9.22 (версия kotlin) - 1.0.17 (версия сборки KSP)
+ksp = "1.9.22-1.0.17"
+# --- КОНЕЦ НОВОГО ---
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
@@ -39,4 +44,7 @@ androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-# --- СТРОКА 'kotlin-compose' ОТСЮДА УДАЛЕНА (как и было в репозитории) ---
+# --- НОВОЕ ---
+# 2. Добавляем псевдоним (alias) для KSP
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+# --- КОНЕЦ НОВОГО ---
