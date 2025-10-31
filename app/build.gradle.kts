@@ -42,7 +42,7 @@ android {
     }
     composeOptions {
         // --- ИСПРАВЛЕНО: Теперь версия берется из libs.versions.toml ---
-        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
+        kotlinCompilerExtensionVersion = "1.5.1"
     }
     packaging {
         resources {
