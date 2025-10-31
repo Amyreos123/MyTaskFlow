@@ -17,9 +17,8 @@ navigationCompose = "2.7.7"
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
-# 1. Добавлено platform = true
-androidx-compose-bom = { platform = true, module = "androidx.compose:compose-bom", version.ref = "composeBom" }
-# 2. ИСПРАВЛЕНА ОШИБКА: Добавлена } в конце строки
+# --- ИСПРАВЛЕНО: Убрано 'platform = true' ---
+androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
 androidx-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3"}
 androidx-compose-ui = { module = "androidx.compose.ui:ui" }
 androidx-compose-ui-graphics = { module = "androidx.compose.ui:ui-graphics" }
@@ -32,7 +31,7 @@ androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", vers
 androidx-junit = { module = "androidx.test.ext:junit", version.ref = "junitVersion" }
 androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 junit = { module = "junit:junit", version.ref = "junit" }
-# 3. Добавлена библиотека навигации
+# Добавлена библиотека навигации
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 
 [plugins]

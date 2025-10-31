@@ -6,17 +6,17 @@ plugins {
 
 android {
     namespace = "com.example.mytaskflow"
-    compileSdk = 34 // Я изменил 36 на 34, т.к. 36 еще нет
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.mytaskflow"
         minSdk = 26
-        targetSdk = 34 // Тоже меняю 36 на 34
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables { // Этот блок важен
+        vectorDrawables {
             useSupportLibrary = true
         }
     }
@@ -31,20 +31,20 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8 // Меняю 11 на 1.8 (стандарт)
-        targetCompatibility = JavaVersion.VERSION_1_8 // Меняю 11 на 1.8 (стандарт)
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = "1.8" // Меняю 11 на 1.8 (стандарт)
+        jvmTarget = "1.8"
     }
     buildFeatures {
-        // --- ВОТ ЭТО МЕСТО ИСПРАВЛЕНО ---
+        // --- ЗДЕСЬ БЫЛА ИСПРАВЛЕНА СИНТАКСИЧЕСКАЯ ОШИБКА ---
         compose = true
     }
-    composeOptions { // Этот блок тоже важен
+    composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
     }
-    packaging { // И этот блок
+    packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
