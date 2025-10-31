@@ -1,8 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    // --- ВОТ ИСПРАВЛЕНИЕ: Мы применяем плагин напрямую по ID ---
-    id("org.jetbrains.kotlin.plugin.compose")
+    // --- ВОТ ИСПРАВЛЕНИЕ: Мы ПОЛНОСТЬЮ УДАЛИЛИ ошибочную строку ---
+    // --- 'id("org.jetbrains.kotlin.plugin.compose")' ---
 }
 
 android {
@@ -16,6 +16,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
@@ -27,6 +28,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
+
                 "proguard-rules.pro"
             )
         }
@@ -40,6 +42,7 @@ android {
     }
     buildFeatures {
         compose = true
+
     }
     composeOptions {
         // Эта строка 'говорит' плагину, какую версию компилятора использовать
@@ -58,6 +61,7 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
+
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
