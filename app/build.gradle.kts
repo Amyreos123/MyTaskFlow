@@ -1,8 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    // --- ВОТ ИСПРАВЛЕНИЕ: Мы ПОЛНОСТЬЮ УДАЛИЛИ ошибочную строку ---
-    // --- 'id("org.jetbrains.kotlin.plugin.compose")' ---
 }
 
 android {
@@ -69,6 +67,10 @@ dependencies {
     // --- НАША НОВАЯ ЗАВИСИМОСТЬ ---
     implementation(libs.androidx.navigation.compose)
     // -------------------------------
+
+    // --- ВОТ ИСПРАВЛЕНИЕ: МЫ ДОБАВЛЯЕМ РАСШИРЕННЫЕ ИКОНКИ ---
+    implementation(libs.androidx.compose.material.icons.extended)
+    // ---------------------------------------------------
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
