@@ -44,8 +44,15 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HabitsScreen(
-    habitsViewModel: HabitsViewModel = viewModel(factory = HabitsViewModel.Factory)
+    // --- ИСПРАВЛЕНИЕ: Убираем ViewModel из параметров ---
+    // habitsViewModel: HabitsViewModel = viewModel(factory = HabitsViewModel.Factory)
+    // --- КОНЕЦ ИСПРАВЛЕНИЯ ---
 ) {
+    // --- ИСПРАВЛЕНИЕ: Инициализируем ViewModel ВНУТРИ,
+    // как в работающем TasksScreen.kt
+    val habitsViewModel: HabitsViewModel = viewModel(factory = HabitsViewModel.Factory)
+    // --- КОНЕЦ ИСПРАВЛЕНИЯ ---
+
     // Используем collectAsStateWithLifecycle для безопасного сбора Flow
     // Мы предоставляем initialValue, чтобы у Composable всегда были данные
     val habits by habitsViewModel.allHabits.collectAsStateWithLifecycle(initialValue = emptyList())

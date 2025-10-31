@@ -6,7 +6,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-// Убираем неиспользуемые импорты Habit
+// --- ИСПРАВЛЕНИЕ: Убираем неиспользуемые импорты ---
+// import com.example.mytaskflow.data.Habit
+// import com.example.mytaskflow.data.HabitRepository
+// --- КОНЕЦ ИСПРАВЛЕНИЯ ---
 import com.example.mytaskflow.data.HubItem
 import com.example.mytaskflow.data.HubRepository
 import com.example.mytaskflow.data.myTaskFlowApplication
@@ -17,15 +20,18 @@ import kotlinx.coroutines.launch
 
 class HubViewModel(private val hubRepository: HubRepository) : ViewModel() {
 
-    // --- ИСПРАВЛЕНИЕ: Убедимся, что здесь используется HubRepository ---
-    // (В твоем файле здесь была ошибка, он ссылался на Habit)
-    // Я исправляю это здесь.
+    // --- ИСПРАВЛЕНИЕ: ВОЗВРАЩАЕМ СКОБКИ () ---
+    // В твоем HubRepository.kt (который ты прислал) allItems - это
+    // функция fun getAllItems(), а не свойство.
+    // Моя предыдущая инструкция убрать скобки была неверной.
+    // Мы возвращаем как было:
     val allItems: StateFlow<List<HubItem>> = hubRepository.getAllItems()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000L),
             initialValue = emptyList()
         )
+    // --- КОНЕЦ ИСПРАВЛЕНИЯ ---
 
     fun insertItem(item: HubItem) {
         viewModelScope.launch {
@@ -39,7 +45,7 @@ class HubViewModel(private val hubRepository: HubRepository) : ViewModel() {
         }
     }
 
-    // --- ИСПРАВЛЕНИЕ: Фабрика теперь корректно использует hubRepository ---
+    // Эта фабрика у тебя работает правильно.
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
@@ -49,5 +55,4 @@ class HubViewModel(private val hubRepository: HubRepository) : ViewModel() {
             }
         }
     }
-    // --- КОНЕЦ ИСПРАВЛЕНИЙ ---
 }

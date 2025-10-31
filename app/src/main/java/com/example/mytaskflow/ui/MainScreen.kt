@@ -2,10 +2,10 @@ package com.example.mytaskflow.ui
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.CheckBox
+import androidx.compose.material.icons.filled.DataObject
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -15,7 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.navigation.NavBackStackEntry
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
@@ -30,48 +30,41 @@ import com.example.mytaskflow.ui.screens.HomeScreen
 import com.example.mytaskflow.ui.screens.HubScreen
 import com.example.mytaskflow.ui.screens.TaskDetailScreen
 import com.example.mytaskflow.ui.screens.TasksScreen
+// Импортируем только те ViewModel, которые нам нужны здесь
+import com.example.mytaskflow.ui.screens.TaskDetailViewModel
 
-// Data class для описания элемента нижней навигации
-data class NavItem(
-    val title: String,
-    val icon: ImageVector,
-    val route: String
+// Элементы для нижней навигации
+val navBarItems = listOf(
+    NavBarItem("Главная", Icons.Default.Home, Screen.Home.route),
+    NavBarItem("Задачи", Icons.Default.List, Screen.Tasks.route),
+    NavBarItem("Привычки", Icons.Default.CheckBox, Screen.Habits.route),
+    NavBarItem("Хаб", Icons.Default.DataObject, Screen.Hub.route)
 )
 
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
 
-    // Список наших экранов для нижней панели
-    val navItems = listOf(
-        NavItem("Главная", Icons.Default.Home, Screen.Home.route),
-        NavItem("Задачи", Icons.Default.List, Screen.Tasks.route),
-        NavItem("Привычки", Icons.Default.DateRange, Screen.Habits.route),
-        NavItem("Хаб", Icons.Default.Settings, Screen.Hub.route) // Используем Settings пока нет иконки "Хаб"
-    )
-
     Scaffold(
         bottomBar = {
             NavigationBar {
-                val navBackStackEntry: NavBackStackEntry? by navController.currentBackStackEntryAsState()
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentDestination = navBackStackEntry?.destination
 
-                navItems.forEach { navItem ->
+                navBarItems.forEach { item ->
                     NavigationBarItem(
-                        icon = { Icon(navItem.icon, contentDescription = navItem.title) },
-                        label = { Text(navItem.title) },
-                        selected = currentDestination?.hierarchy?.any { it.route == navItem.route } == true,
+                        selected = currentDestination?.hierarchy?.any { it.route == item.route } == true,
                         onClick = {
-                            navController.navigate(navItem.route) {
-                                // Этот код гарантирует, что мы не будем "накапливать"
-                                // экраны в стеке при переключении вкладок.
+                            navController.navigate(item.route) {
                                 popUpTo(navController.graph.findStartDestination().id) {
                                     saveState = true
                                 }
                                 launchSingleTop = true
                                 restoreState = true
                             }
-                        }
+                        },
+                        icon = { Icon(item.icon, contentDescription = item.label) },
+                        label = { Text(item.label) }
                     )
                 }
             }
@@ -82,9 +75,12 @@ fun MainScreen() {
             startDestination = Screen.Home.route,
             modifier = Modifier.padding(innerPadding)
         ) {
+            // 1. Главный экран
             composable(Screen.Home.route) {
                 HomeScreen()
             }
+
+            // 2. Экран Задач
             composable(Screen.Tasks.route) {
                 TasksScreen(
                     onTaskClick = { taskId ->
@@ -92,23 +88,29 @@ fun MainScreen() {
                     }
                 )
             }
+
+            // 3. Экран Привычек
             composable(Screen.Habits.route) {
                 HabitsScreen()
             }
+
+            // 4. Экран Хаб
             composable(Screen.Hub.route) {
                 HubScreen()
             }
 
-            // Экран "Детали задачи" с аргументом
+            // 5. Экран Деталей Задачи
             composable(
                 route = Screen.TaskDetail.route,
-                arguments = listOf(navArgument("taskId") { type = NavType.LongType })
-            ) { backStackEntry ->
-
+                arguments = listOf(navArgument("taskId") {
+                    type = NavType.LongType
+                })
+            ) {
                 // --- ИСПРАВЛЕНИЕ ЗДЕСЬ ---
-                // Было: onNavigateBack = { navController.popBackStack() }
-                // Стало: onNavigateUp = { navController.popBackStack() }
+                // Меняем 'onNavigateBack' на 'onNavigateUp',
+                // чтобы соответствовать TaskDetailScreen.kt
                 TaskDetailScreen(
+                    viewModel = viewModel(factory = TaskDetailViewModel.Factory),
                     onNavigateUp = { navController.popBackStack() }
                 )
                 // --- КОНЕЦ ИСПРАВЛЕНИЯ ---
@@ -116,3 +118,9 @@ fun MainScreen() {
         }
     }
 }
+
+data class NavBarItem(
+    val label: String,
+    val icon: ImageVector,
+    val route: String
+)
