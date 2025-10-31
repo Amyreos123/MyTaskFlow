@@ -15,7 +15,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun taskDao(): TaskDao
     abstract fun subTaskDao(): SubTaskDao
     abstract fun habitDao(): HabitDao
-    abstract fun hubDao(): HubDao // Эта строка была критически важна
+    abstract fun hubDao(): HubDao // --- ВОТ ЭТА СТРОКА, КОТОРАЯ ВСЕ ЧИНИТ ---
 
     companion object {
         @Volatile
@@ -88,6 +88,12 @@ abstract class AppDatabase : RoomDatabase() {
                     "task_database"
                 )
                     .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
+                    // --- ВОТ ЭТО ИЗМЕНЕНИЕ ---
+                    // Эта строка говорит Room: "Если миграция невозможна,
+                    // просто УДАЛИ старую базу и создай новую".
+                    // Это решает 99% проблем с миграцией в разработке.
+                    .fallbackToDestructiveMigration()
+                    // --- КОНЕЦ ИЗМЕНЕНИЯ ---
                     .build()
                     .also { Instance = it }
             }

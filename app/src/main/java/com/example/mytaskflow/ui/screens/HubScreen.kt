@@ -29,6 +29,8 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+// --- ЭТО ИСПРАВЛЕНИЕ ОТОБРАЖЕНИЯ ---
+
 @Composable
 fun HubScreen(
     modifier: Modifier = Modifier,
@@ -72,7 +74,7 @@ fun HubScreen(
 fun HubItemCard(item: HubItem) {
     val context = LocalContext.current
     // Вспомогательная функция для форматирования даты
-    val sdf = SimpleDateFormat("dd MMM yyyY, HH:mm", Locale.getDefault())
+    val sdf = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
     val formattedDate = sdf.format(Date(item.timestamp))
 
     Card(

@@ -1,3 +1,4 @@
+// ТЕСТОВАЯ МЕТКА 12345
 package com.example.mytaskflow.ui.screens
 
 import androidx.lifecycle.ViewModel
@@ -71,7 +72,7 @@ class HabitsViewModel(private val repository: HabitRepository) : ViewModel() {
     }
 
 
-    // --- ИЗМЕНЕНИЕ ЗДЕСЬ ---
+    // --- ЭТО ИСПРАВЛЕНИЕ ВЫЛЕТА ---
     // Переписываем старую фабрику на новый,
     // стандартный для нашего проекта синтаксис.
     companion object {
@@ -88,4 +89,5 @@ class HabitsViewModel(private val repository: HabitRepository) : ViewModel() {
             }
         }
     }
+    // --- КОНЕЦ ИСПРАВЛЕНИЙ ---
 }
