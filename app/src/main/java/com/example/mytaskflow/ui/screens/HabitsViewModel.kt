@@ -4,9 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.mytaskflow.data.Habit
 import com.example.mytaskflow.data.HabitRepository
-import com.example.mytaskflow.data.MyTaskFlowApplication
+import com.example.mytaskflow.data.myTaskFlowApplication
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -68,25 +70,22 @@ class HabitsViewModel(private val repository: HabitRepository) : ViewModel() {
     }
 
 
-    // --- Фабрика (инструкция по сборке) ---
-    // Стандартный шаблон, такой же, как у TasksViewModel,
-    // но для HabitRepository.
+    // --- ИЗМЕНЕНИЕ ЗДЕСЬ ---
+    // Переписываем старую фабрику на новый,
+    // стандартный для нашего проекта синтаксис.
     companion object {
-        val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(
-                modelClass: Class<T>,
-                extras: CreationExtras
-            ): T {
-                // 1. Получаем Application
-                val application = (checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY]) as MyTaskFlowApplication)
+        val Factory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                // 1. Получаем Application с помощью нашей вспомогательной функции
+                val application = this.myTaskFlowApplication()
 
-                // 2. Берем из него наш НОВЫЙ репозиторий
+                // 2. Берем из него репозиторий
                 val repository = application.habitRepository
 
                 // 3. Создаем и возвращаем HabitsViewModel
-                return HabitsViewModel(repository) as T
+                HabitsViewModel(repository)
             }
         }
     }
+    // --- КОНЕЦ ИЗМЕНЕНИЙ ---
 }

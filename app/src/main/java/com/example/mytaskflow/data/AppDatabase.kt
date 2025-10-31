@@ -15,7 +15,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun taskDao(): TaskDao
     abstract fun subTaskDao(): SubTaskDao
     abstract fun habitDao(): HabitDao
-    abstract fun hubDao(): HubDao // --- ВОТ ЭТА СТРОКА, КОТОРАЯ ВСЕ ЧИНИТ ---
+    abstract fun hubDao(): HubDao // Эта строка была критически важна
 
     companion object {
         @Volatile

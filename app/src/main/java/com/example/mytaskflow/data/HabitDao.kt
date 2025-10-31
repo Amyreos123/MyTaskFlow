@@ -10,14 +10,14 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface HabitDao {
 
-    // --- ЭТА ФУНКЦИЯ ОТСУТСТВОВАЛА ---
+    // Функция для получения всех привычек (отсутствовала)
     @Query("SELECT * FROM habits ORDER BY title ASC")
     fun getAllHabits(): Flow<List<Habit>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(habit: Habit)
 
-    // --- ЭТА ФУНКЦИЯ ОТСУТСТВОВАЛА ---
+    // Функция для обновления привычки (отсутствовала)
     @Update
     suspend fun update(habit: Habit)
 }

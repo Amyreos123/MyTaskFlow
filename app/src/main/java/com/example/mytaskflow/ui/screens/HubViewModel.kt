@@ -37,13 +37,17 @@ class HubViewModel(private val hubRepository: HubRepository) : ViewModel() {
         }
     }
 
-    // --- Factory для создания ViewModel ---
+    // --- ИЗМЕНЕНИЕ ЗДЕСЬ (УПРОЩЕНИЕ) ---
+    // Приводим к стандартному виду, используя
+    // уже импортированную функцию myTaskFlowApplication
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                val application = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as com.example.mytaskflow.data.MyTaskFlowApplication)
+                // Используем вспомогательную функцию, которая уже импортирована
+                val application = this.myTaskFlowApplication()
                 HubViewModel(application.hubRepository)
             }
         }
     }
+    // --- КОНЕЦ ИЗМЕНЕНИЙ ---
 }
