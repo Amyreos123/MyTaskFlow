@@ -1,51 +1,39 @@
 package com.example.mytaskflow.navigation
 
-import androidx.annotation.StringRes
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Checklist
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Link
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.ui.graphics.vector.ImageVector
-import com.example.mytaskflow.R
+import androidx.navigation.NamedNavArgument
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 
-// Sealed class (запечатанный класс) ограничивает иерархию.
-// Мы говорим: "Существуют ТОЛЬКО эти четыре экрана".
+// --- ИЗМЕНЕНИЕ ---
+// 1. Делаем sealed class (запечатанный класс), чтобы он мог
+//    содержать как 'object' (экраны без аргументов),
+//    так и 'object' с доп. логикой (TaskDetail).
 sealed class Screen(
-    val route: String, // Уникальный ID для навигации
-    @StringRes val titleResId: Int, // Ссылка на наш strings.xml
-    val icon: ImageVector // Иконка
+    val route: String,
+    val arguments: List<NamedNavArgument> = emptyList()
 ) {
-    // object (объект) используется, так как у нас только один экземпляр каждого экрана
-    data object Home : Screen(
-        route = "home",
-        titleResId = R.string.nav_title_home,
-        icon = Icons.Filled.Home
-    )
+    // 2. Объекты для экранов без аргументов
+    object Home : Screen("home")
+    object Tasks : Screen("tasks")
+    object Habits : Screen("habits")
+    object Hub : Screen("hub")
 
-    data object Tasks : Screen(
-        route = "tasks",
-        titleResId = R.string.nav_title_tasks,
-        icon = Icons.Filled.Checklist
-    )
-
-    data object Habits : Screen(
-        route = "habits",
-        titleResId = R.string.nav_title_habits,
-        icon = Icons.Filled.Star
-    )
-
-    data object Hub : Screen(
-        route = "hub",
-        titleResId = R.string.nav_title_hub,
-        icon = Icons.Filled.Link
-    )
+    // --- НОВОЕ ---
+    // 3. Создаем объект для экрана Деталей Задачи
+    object TaskDetail : Screen(
+        // 4. Маршрут теперь включает "заполнитель" {taskId}
+        route = "taskDetail/{taskId}",
+        // 5. Мы объявляем, что {taskId} - это аргумент
+        //    типа NavType.IntType
+        arguments = listOf(
+            navArgument("taskId") {
+                type = NavType.IntType
+            }
+        )
+    ) {
+        // 6. Вспомогательная функция, чтобы построить
+        //    маршрут с реальным ID (например, "taskDetail/5")
+        fun createRoute(taskId: Int) = "taskDetail/$taskId"
+    }
+    // --- КОНЕЦ НОВОГО ---
 }
-
-// Список всех наших экранов для удобного использования в навигации
-val bottomNavigationItems = listOf(
-    Screen.Home,
-    Screen.Tasks,
-    Screen.Habits,
-    Screen.Hub
-)

@@ -5,31 +5,36 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
-// @Dao - "Data Access Object". Говорит Room, что это интерфейс для доступа к БД.
 @Dao
 interface TaskDao {
 
-    // OnConflictStrategy.IGNORE - если мы пытаемся вставить задачу с ID,
-    // который уже есть, Room просто проигнорирует эту вставку.
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(task: Task)
 
-    // suspend - функция может быть приостановлена (для асинхронной работы)
     @Update
     suspend fun update(task: Task)
 
-    // --- НОВОЕ ---
-    // Добавляем аннотацию @Delete
     @Delete
     suspend fun delete(task: Task)
-    // --- КОНЕЦ НОВОГО ---
 
-    // @Query - специальный запрос к БД.
-    // "SELECT * ..." - выбрать все колонки из таблицы "tasks"
-    // "ORDER BY id DESC" - сортировать по ID в обратном порядке (новые вверху)
-    @Query("SELECT * FROM tasks ORDER BY id DESC")
-    fun getAllTasks(): Flow<List<Task>> // Flow - асинхронный "поток" данных
+    // --- ИЗМЕНЕНИЕ ---
+    // @Transaction - Гарантирует, что Room выполнит два запроса
+    // (один для Task, один для SubTask) "атомарно" (как единое целое).
+    // Теперь функция возвращает наш класс-контейнер TaskWithSubTasks.
+    @Transaction
+    @Query("SELECT * FROM tasks ORDER BY priority DESC, id DESC")
+    fun getAllTasks(): Flow<List<TaskWithSubTasks>>
+    // --- КОНЕЦ ИZМЕНЕНИЯ ---
+
+    // --- НОВОЕ ---
+    // Новая функция, которая понадобится нам на Шаге 7.4
+    // для экрана деталей задачи.
+    @Transaction
+    @Query("SELECT * FROM tasks WHERE id = :id")
+    fun getTaskWithSubTasks(id: Int): Flow<TaskWithSubTasks>
+    // --- КОНЕЦ НОВОГО ---
 }

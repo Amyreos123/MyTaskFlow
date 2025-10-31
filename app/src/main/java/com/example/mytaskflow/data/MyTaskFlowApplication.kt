@@ -2,14 +2,21 @@ package com.example.mytaskflow.data
 
 import android.app.Application
 
-// Мы наследуемся от Application, чтобы этот класс
-// существовал, пока живо приложение.
+/**
+ * Класс Application - "точка входа" в приложение.
+ * Мы используем его, чтобы лениво (lazy) создать
+ * и хранить единственные экземпляры (singletons)
+ * нашей Базы Данных и Репозитория.
+ */
 class MyTaskFlowApplication : Application() {
 
-    // 'lazy' означает, что база данных будет создана только тогда,
-    // когда к ней обратятся в первый раз.
-    val database: AppDatabase by lazy { AppDatabase.getDatabase(this) }
+    // Лениво создаем экземпляр Базы Данных
+    private val database by lazy { AppDatabase.getDatabase(this) }
 
-    // То же самое для репозитория.
-    val taskRepository: TaskRepository by lazy { TaskRepository(database.taskDao()) }
+    // --- ИЗМЕНЕНИЕ ---
+    // "Лениво" создаем Репозиторий, передавая ему ОБА DAO.
+    val taskRepository by lazy {
+        TaskRepository(database.taskDao(), database.subTaskDao())
+    }
+    // --- КОНЕЦ ИЗМЕНЕНИЯ ---
 }

@@ -5,42 +5,53 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.example.mytaskflow.data.MyTaskFlowApplication
+// import com.example.mytaskflow.data.SubTask <-- УДАЛЯЕМ
 import com.example.mytaskflow.data.Task
+import com.example.mytaskflow.data.TaskPriority
 import com.example.mytaskflow.data.TaskRepository
+import com.example.mytaskflow.data.TaskWithSubTasks
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-// 1. ViewModel принимает TaskRepository в конструкторе.
 class TasksViewModel(private val repository: TaskRepository) : ViewModel() {
 
-    // 2. Он "достает" Flow (поток) задач из репозитория.
-    // UI (TasksScreen) будет "подписан" на этот поток.
-    val allTasks: Flow<List<Task>> = repository.allTasks
+    // Тип потока <List<TaskWithSubTasks>> - это остается
+    val allTasks: Flow<List<TaskWithSubTasks>> = repository.allTasks
 
-    // 3. Функция для добавления новой задачи.
-    // Она запускает Coroutine в viewModelScope (безопасный "контекст" для ViewModel).
-    fun insertTask(title: String) = viewModelScope.launch {
-        // Мы пока создаем простую задачу, в будущем здесь будет больше логики
+    // --- Функции для Task ---
+    fun insertTask(title: String, priority: TaskPriority) = viewModelScope.launch {
         if (title.isNotBlank()) {
-            repository.insert(Task(title = title))
+            repository.insert(Task(title = title, priority = priority.value))
         }
     }
 
-    // 4. Функция для обновления задачи (например, для Checkbox).
     fun updateTask(task: Task) = viewModelScope.launch {
         repository.update(task)
     }
 
-    // --- НОВОЕ ---
-    // 5. Функция для удаления задачи.
     fun deleteTask(task: Task) = viewModelScope.launch {
         repository.delete(task)
     }
-    // --- КОНЕЦ НОВОГО ---
+
+    // --- УДАЛЯЕМ ЛОГИКУ ПОДЗАДАЧ ---
+    // (Она переехала в TaskDetailViewModel)
+    /*
+    fun insertSubTask(subTask: SubTask) = viewModelScope.launch {
+        repository.insertSubTask(subTask)
+    }
+
+    fun updateSubTask(subTask: SubTask) = viewModelScope.launch {
+        repository.updateSubTask(subTask)
+    }
+
+    fun deleteSubTask(subTask: SubTask) = viewModelScope.launch {
+        repository.deleteSubTask(subTask)
+    }
+    */
+    // --- КОНЕЦ УДАЛЕНИЯ ---
 
 
     // --- Фабрика (инструкция по сборке) ---
-    // Это стандартный шаблон, который нужно просто запомнить.
     companion object {
         val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
@@ -48,13 +59,8 @@ class TasksViewModel(private val repository: TaskRepository) : ViewModel() {
                 modelClass: Class<T>,
                 extras: CreationExtras
             ): T {
-                // 1. Получаем Application (который мы создали)
                 val application = (checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY]) as MyTaskFlowApplication)
-
-                // 2. Берем из него наш репозиторий
                 val repository = application.taskRepository
-
-                // 3. Создаем и возвращаем TasksViewModel
                 return TasksViewModel(repository) as T
             }
         }

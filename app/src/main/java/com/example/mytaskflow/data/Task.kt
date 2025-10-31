@@ -12,5 +12,9 @@ data class Task(
     val id: Int = 0,
 
     val title: String,
-    val isCompleted: Boolean = false
+    val isCompleted: Boolean = false,
+    // Добавляем поле для приоритета.
+    // По умолчанию все новые задачи будут "Обычными" (NORMAL).
+    // Мы используем .value, чтобы сохранить Int (1) в БД.
+    val priority: Int = TaskPriority.NORMAL.value
 )
