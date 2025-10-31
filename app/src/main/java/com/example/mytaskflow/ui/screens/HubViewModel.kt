@@ -48,5 +48,4 @@ class HubViewModel(private val hubRepository: HubRepository) : ViewModel() {
             }
         }
     }
-    // --- КОНЕЦ ИЗМЕНЕНИЙ ---
 }

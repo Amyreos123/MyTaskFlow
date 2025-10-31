@@ -88,5 +88,4 @@ class HabitsViewModel(private val repository: HabitRepository) : ViewModel() {
             }
         }
     }
-    // --- КОНЕЦ ИЗМЕНЕНИЙ ---
 }
