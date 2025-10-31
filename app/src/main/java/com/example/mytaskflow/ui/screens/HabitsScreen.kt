@@ -2,195 +2,167 @@ package com.example.mytaskflow.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+// --- ИЗМЕНЕНИЯ ЗДЕСЬ ---
+import androidx.lifecycle.compose.collectAsStateWithLifecycle // 1. ДОБАВЛЕН ЭТОТ ИМПОРТ
+import androidx.lifecycle.viewmodel.compose.viewModel // 2. ИСПРАВЛЕН ЭТОТ ИМПОРТ (добавлено .compose)
+// --- КОНЕЦ ИЗМЕНЕНИЙ ---
 import com.example.mytaskflow.data.Habit
-import java.util.Calendar
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HabitsScreen(
-    modifier: Modifier = Modifier,
-    // 1. Получаем ViewModel, используя нашу Фабрику
-    viewModel: HabitsViewModel = viewModel(factory = HabitsViewModel.Factory)
+    habitsViewModel: HabitsViewModel = viewModel(factory = HabitsViewModel.Factory)
 ) {
-    // 2. "Подписываемся" на поток привычек из ViewModel
-    val habits by viewModel.allHabits.collectAsState(initial = emptyList())
-
-    // 3. Получаем таймстэмп для "сегодня".
-    //    Используем 'remember', чтобы эта функция не вызывалась
-    //    при каждой "перерисовке" (recomposition).
-    val todayTimestamp = remember { getTodayStartTimestamp() }
+    // Теперь эта строка (которая у тебя была ~47) будет работать
+    val habits by habitsViewModel.habits.collectAsStateWithLifecycle()
+    var showBottomSheet by remember { mutableStateOf(false) }
+    var newHabitTitle by remember { mutableStateOf("") }
+    val sheetState = rememberModalBottomSheetState()
+    val scope = rememberCoroutineScope()
 
     Scaffold(
-        modifier = modifier,
-        topBar = {
-            TopAppBar(title = { Text("Привычки") })
+        floatingActionButton = {
+            FloatingActionButton(onClick = { showBottomSheet = true }) {
+                Icon(Icons.Default.Add, contentDescription = "Добавить привычку")
+            }
         }
-    ) { innerPadding ->
+    ) { paddingValues ->
         Column(
             modifier = Modifier
-                .padding(innerPadding)
                 .fillMaxSize()
-                .padding(horizontal = 16.dp)
+                .padding(paddingValues)
+                .padding(16.dp)
         ) {
-            // 4. Секция для добавления новой привычки
-            AddHabitSection(
-                onAddHabit = { habitTitle ->
-                    viewModel.insertHabit(habitTitle)
-                }
+            Text(
+                text = "Привычки",
+                style = MaterialTheme.typography.headlineLarge,
+                modifier = Modifier.padding(bottom = 16.dp)
             )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // 5. Список всех привычек
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                contentPadding = PaddingValues(8.dp)
             ) {
-                items(habits, key = { it.id }) { habit ->
-                    // 6. Проверяем, выполнена ли привычка СЕГОДНЯ
-                    val isCompletedToday = habit.completedDates.contains(todayTimestamp)
-
+                items(habits) { habit ->
                     HabitItem(
                         habit = habit,
-                        isCompletedToday = isCompletedToday,
-                        onHabitClick = {
-                            // 7. При клике - просто сообщаем ViewModel.
-                            //    ViewModel сам разберется с логикой.
-                            viewModel.onHabitClicked(habit)
+                        onCheckedChange = { isChecked ->
+                            habitsViewModel.toggleHabitCompletion(habit, isChecked)
+                        },
+                        onDelete = {
+                            habitsViewModel.deleteHabit(habit)
                         }
                     )
+                }
+            }
+        }
+
+        if (showBottomSheet) {
+            ModalBottomSheet(
+                onDismissRequest = { showBottomSheet = false },
+                sheetState = sheetState
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(32.dp),
+                    horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    Text("Новая привычка", style = MaterialTheme.typography.headlineSmall)
+                    OutlinedTextField(
+                        value = newHabitTitle,
+                        onValueChange = { newHabitTitle = it },
+                        label = { Text("Название") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Button(
+                        onClick = {
+                            if (newHabitTitle.isNotBlank()) {
+                                habitsViewModel.addHabit(newHabitTitle)
+                                newHabitTitle = ""
+                                scope.launch { sheetState.hide() }.invokeOnCompletion {
+                                    if (!sheetState.isVisible) {
+                                        showBottomSheet = false
+                                    }
+                                }
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Добавить")
+                    }
                 }
             }
         }
     }
 }
 
-/**
- * Composable-элемент для отображения одной привычки в списке.
- */
 @Composable
 fun HabitItem(
     habit: Habit,
-    isCompletedToday: Boolean,
-    onHabitClick: () -> Unit,
-    modifier: Modifier = Modifier
+    onCheckedChange: (Boolean) -> Unit,
+    onDelete: () -> Unit
 ) {
     Card(
-        modifier = modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = habit.title,
-                modifier = Modifier.weight(1f),
-                style = MaterialTheme.typography.bodyLarge
-            )
-            // Checkbox "отмечает" выполнение за СЕГОДНЯ
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(
+                verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = habit.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.weight(1f)
+                )
+                IconButton(onClick = onDelete) {
+                    Icon(
+                        Icons.Default.Delete,
+                        contentDescription = "Удалить привычку",
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                }
+            }
             Checkbox(
-                checked = isCompletedToday,
-                // Важно: onCheckedChange принимает Boolean, но он нам не нужен,
-                // т.к. ViewModel сам решает, какое будет состояние.
-                // Поэтому мы просто вызываем onHabitClick().
-                onCheckedChange = { onHabitClick() }
+                checked = habit.isCompletedToday(),
+                onCheckedChange = onCheckedChange
             )
+            Text(text = "Выполнено сегодня: ${if (habit.isCompletedToday()) "Да" else "Нет"}")
         }
     }
-}
-
-/**
- * Composable-элемент для поля ввода и кнопки добавления привычки.
- */
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun AddHabitSection(
-    onAddHabit: (String) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    var text by remember { mutableStateOf("") }
-    val keyboardController = LocalSoftwareKeyboardController.current
-
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        OutlinedTextField(
-            value = text,
-            onValueChange = { text = it },
-            label = { Text("Новая привычка") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Done // Кнопка "Готово" на клавиатуре
-            ),
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    if (text.isNotBlank()) {
-                        onAddHabit(text)
-                        text = ""
-                        keyboardController?.hide()
-                    }
-                }
-            )
-        )
-        Button(
-            onClick = {
-                if (text.isNotBlank()) {
-                    onAddHabit(text)
-                    text = ""
-                    keyboardController?.hide()
-                }
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Добавить привычку")
-        }
-    }
-}
-
-/**
- * Вспомогательная функция, дублирующая логику из ViewModel,
- * чтобы UI мог определить, "отмечен" ли сегодняшний день.
- */
-private fun getTodayStartTimestamp(): Long {
-    return Calendar.getInstance().apply {
-        set(Calendar.HOUR_OF_DAY, 0)
-        set(Calendar.MINUTE, 0)
-        set(Calendar.SECOND, 0)
-        set(Calendar.MILLISECOND, 0)
-    }.timeInMillis
 }

@@ -84,6 +84,12 @@ dependencies {
 
     implementation(libs.androidx.compose.material.icons.extended)
 
+    // --- ИЗМЕНЕНИЕ ---
+    // Вот недостающие зависимости, которые исправят ошибки в HabitsScreen.kt
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    // --- КОНЕЦ ИЗМЕНЕНИЙ ---
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
