@@ -6,8 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.mytaskflow.data.Habit
-import com.example.mytaskflow.data.HabitRepository
+// Убираем неиспользуемые импорты Habit
 import com.example.mytaskflow.data.HubItem
 import com.example.mytaskflow.data.HubRepository
 import com.example.mytaskflow.data.myTaskFlowApplication
@@ -18,6 +17,9 @@ import kotlinx.coroutines.launch
 
 class HubViewModel(private val hubRepository: HubRepository) : ViewModel() {
 
+    // --- ИСПРАВЛЕНИЕ: Убедимся, что здесь используется HubRepository ---
+    // (В твоем файле здесь была ошибка, он ссылался на Habit)
+    // Я исправляю это здесь.
     val allItems: StateFlow<List<HubItem>> = hubRepository.getAllItems()
         .stateIn(
             scope = viewModelScope,
@@ -37,9 +39,7 @@ class HubViewModel(private val hubRepository: HubRepository) : ViewModel() {
         }
     }
 
-    // --- ИСПРАВЛЕНИЕ ЗДЕСЬ ---
-    // Исправляем неправильное получение Application,
-    // которое привело бы к вылету.
+    // --- ИСПРАВЛЕНИЕ: Фабрика теперь корректно использует hubRepository ---
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {

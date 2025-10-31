@@ -37,10 +37,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mytaskflow.data.Habit
-// --- ИСПРАВЛЕНИЕ ЗДЕСЬ ---
 // Добавляем недостающий import, который и вызывал ошибку
 import com.example.mytaskflow.ui.screens.HabitsViewModel
-// --- КОНЕЦ ИСПРАВЛЕНИЯ ---
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,10 +46,9 @@ import kotlinx.coroutines.launch
 fun HabitsScreen(
     habitsViewModel: HabitsViewModel = viewModel(factory = HabitsViewModel.Factory)
 ) {
-    // --- ИЗМЕНЕНИЕ ЗДЕСЬ ---
-    // Добавляем `initialValue`, так как `allHabits` - это Flow, а не StateFlow
+    // Используем collectAsStateWithLifecycle для безопасного сбора Flow
+    // Мы предоставляем initialValue, чтобы у Composable всегда были данные
     val habits by habitsViewModel.allHabits.collectAsStateWithLifecycle(initialValue = emptyList())
-    // --- КОНЕЦ ИЗМЕНЕНИЙ ---
 
     var showBottomSheet by remember { mutableStateOf(false) }
     var newHabitTitle by remember { mutableStateOf("") }
@@ -86,6 +83,7 @@ fun HabitsScreen(
                     HabitItem(
                         habit = habit,
                         onCheckedChange = {
+                            // Передаем событие клика в ViewModel
                             habitsViewModel.onHabitClicked(habit)
                         }
                         // onDelete = { ... } // Временно убрано
@@ -116,6 +114,7 @@ fun HabitsScreen(
                     Button(
                         onClick = {
                             if (newHabitTitle.isNotBlank()) {
+                                // Вызываем функцию ViewModel для добавления
                                 habitsViewModel.insertHabit(newHabitTitle)
                                 newHabitTitle = ""
                                 scope.launch { sheetState.hide() }.invokeOnCompletion {
@@ -158,6 +157,7 @@ fun HabitItem(
                 // IconButton(onClick = onDelete) { ... } // Временно убрано
             }
             Checkbox(
+                // Используем функцию isCompletedToday() из модели Habit
                 checked = habit.isCompletedToday(),
                 onCheckedChange = onCheckedChange
             )

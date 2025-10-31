@@ -12,7 +12,8 @@ class MyTaskFlowApplication : Application() {
 
     val taskRepository by lazy { TaskRepository(database.taskDao(), database.subTaskDao()) }
     val habitRepository by lazy { HabitRepository(database.habitDao()) }
-    val hubRepository by lazy { HubRepository(database.hubDao()) } // --- ИЗМЕНЕНИЕ ---
+    // --- ИСПРАВЛЕНИЕ: Добавляем репозиторий для Hub ---
+    val hubRepository by lazy { HubRepository(database.hubDao()) }
 }
 
 // Вспомогательная функция для получения ссылки на Application
