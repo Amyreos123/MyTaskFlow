@@ -15,7 +15,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun taskDao(): TaskDao
     abstract fun subTaskDao(): SubTaskDao
     abstract fun habitDao(): HabitDao
-    abstract fun hubDao(): HubDao // --- ИЗМЕНЕНИЕ: ЭТА СТРОКА БЫЛА ПРОПУЩЕНА ---
+    abstract fun hubDao(): HubDao // --- ВОТ ЭТО ИСПРАВЛЕНИЕ (ДОБАВЛЕНА СТРОКА) ---
 
     companion object {
         @Volatile
