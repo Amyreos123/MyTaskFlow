@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -67,7 +68,11 @@ dependencies {
     // --- НАША НОВАЯ ЗАВИСИМОСТЬ ---
     implementation(libs.androidx.navigation.compose)
     // -------------------------------
-
+// --- НАШИ НОВЫЕ ЗАВИСИМОСТИ ROOM ---
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx) // Поддержка Coroutines
+    ksp(libs.androidx.room.compiler)      // Аннотации KSP
+    // ------------------------------------
     // --- ВОТ ИСПРАВЛЕНИЕ: МЫ ДОБАВЛЯЕМ РАСШИРЕННЫЕ ИКОНКИ ---
     implementation(libs.androidx.compose.material.icons.extended)
     // ---------------------------------------------------
