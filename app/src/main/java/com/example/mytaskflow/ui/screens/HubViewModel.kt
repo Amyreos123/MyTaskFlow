@@ -37,9 +37,8 @@ class HubViewModel(private val hubRepository: HubRepository) : ViewModel() {
         }
     }
 
-    // --- ИЗМЕНЕНИЕ ЗДЕСЬ (УПРОЩЕНИЕ) ---
-    // Приводим к стандартному виду, используя
-    // уже импортированную функцию myTaskFlowApplication
+    // --- ИЗМЕНЕНИЕ ЗДЕСЬ ---
+    // Исправляем неправильное получение Application
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {

@@ -36,7 +36,6 @@ fun HubScreen(
     hubViewModel: HubViewModel = viewModel(factory = HubViewModel.Factory)
 ) {
     // 2. Подписываемся на StateFlow со списком всех элементов
-    // (здесь initialValue не нужен, т.к. allItems в HubViewModel - это StateFlow)
     val hubItems by hubViewModel.allItems.collectAsStateWithLifecycle()
 
     // 3. Проверяем, пуст ли список

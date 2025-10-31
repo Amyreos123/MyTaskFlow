@@ -8,7 +8,8 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.mytaskflow.data.Habit
 import com.example.mytaskflow.data.HabitRepository
-import com.example.mytaskflow.data.myTaskFlowApplication
+import com.example.mytaskflow.data.MyTaskFlowApplication // Убедись, что этот импорт есть
+import com.example.mytaskflow.data.myTaskFlowApplication // И этот импорт КЛЮЧЕВОЙ
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.util.Calendar
