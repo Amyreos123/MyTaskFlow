@@ -2,23 +2,28 @@ package com.example.mytaskflow.data
 
 import kotlinx.coroutines.flow.Flow
 
-// Репозиторий - это обычный класс.
-// Он принимает TaskDao в своем конструкторе, чтобы знать, с каким "пультом" работать.
+/**
+ * Репозиторий - это "посредник" между ViewModel и Источником Данных (DAO).
+ * Он прячет от ViewModel то, откуда берутся данные (БД, сеть и т.д.).
+ */
 class TaskRepository(private val taskDao: TaskDao) {
 
-    // Эта переменная просто "пробрасывает" поток (Flow) из DAO.
-    // Наш ViewModel будет 'слушать' ее.
+    // "Сквозной" доступ к потоку задач из DAO
     val allTasks: Flow<List<Task>> = taskDao.getAllTasks()
 
-    // suspend-функция для вставки. Она просто вызывает такую же функцию в DAO.
+    // suspend - эти функции должны вызываться из Coroutine
     suspend fun insert(task: Task) {
         taskDao.insert(task)
     }
 
-    // suspend-функция для обновления.
     suspend fun update(task: Task) {
         taskDao.update(task)
     }
 
-    // В будущем мы можем добавить сюда deleteTask, getTaskById и т.д.
+    // --- НОВОЕ ---
+    // Добавляем функцию delete, которая вызывает DAO
+    suspend fun delete(task: Task) {
+        taskDao.delete(task)
+    }
+    // --- КОНЕЦ НОВОГО ---
 }

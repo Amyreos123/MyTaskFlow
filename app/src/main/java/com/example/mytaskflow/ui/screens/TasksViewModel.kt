@@ -31,6 +31,14 @@ class TasksViewModel(private val repository: TaskRepository) : ViewModel() {
         repository.update(task)
     }
 
+    // --- НОВОЕ ---
+    // 5. Функция для удаления задачи.
+    fun deleteTask(task: Task) = viewModelScope.launch {
+        repository.delete(task)
+    }
+    // --- КОНЕЦ НОВОГО ---
+
+
     // --- Фабрика (инструкция по сборке) ---
     // Это стандартный шаблон, который нужно просто запомнить.
     companion object {
