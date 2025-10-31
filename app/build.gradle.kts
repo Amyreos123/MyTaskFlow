@@ -1,7 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
+    // --- ВОТ ИСПРАВЛЕНИЕ: Мы применяем плагин напрямую по ID ---
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 android {
@@ -41,8 +42,8 @@ android {
         compose = true
     }
     composeOptions {
-        // --- ИСПРАВЛЕНО: Теперь версия берется из libs.versions.toml ---
-        kotlinCompilerExtensionVersion = "1.5.1"
+        // Эта строка 'говорит' плагину, какую версию компилятора использовать
+        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
     }
     packaging {
         resources {
