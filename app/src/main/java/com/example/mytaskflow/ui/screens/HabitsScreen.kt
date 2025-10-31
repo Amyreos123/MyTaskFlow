@@ -37,6 +37,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mytaskflow.data.Habit
+// --- ИСПРАВЛЕНИЕ ЗДЕСЬ ---
+// Добавляем недостающий import, который и вызывал ошибку
+import com.example.mytaskflow.ui.screens.HabitsViewModel
+// --- КОНЕЦ ИСПРАВЛЕНИЯ ---
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)

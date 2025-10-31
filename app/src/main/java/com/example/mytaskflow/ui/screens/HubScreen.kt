@@ -25,11 +25,13 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mytaskflow.data.HubItem
+// --- ИСПРАВЛЕНИЕ ЗДЕСЬ ---
+// Добавляем недостающий import, который вызвал бы следующую ошибку
+import com.example.mytaskflow.ui.screens.HubViewModel
+// --- КОНЕЦ ИСПРАВЛЕНИЯ ---
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-
-// --- ЭТО ИСПРАВЛЕНИЕ ОТОБРАЖЕНИЯ ---
 
 @Composable
 fun HubScreen(

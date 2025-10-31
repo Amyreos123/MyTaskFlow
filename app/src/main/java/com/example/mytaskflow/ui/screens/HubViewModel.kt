@@ -37,7 +37,7 @@ class HubViewModel(private val hubRepository: HubRepository) : ViewModel() {
         }
     }
 
-    // --- ЭТО ИСПРАВЛЕНИЕ ВЫЛЕТА ---
+    // --- ИСПРАВЛЕНИЕ ЗДЕСЬ ---
     // Исправляем неправильное получение Application
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
