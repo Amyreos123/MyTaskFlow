@@ -25,14 +25,16 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mytaskflow.data.HubItem
-// --- ИСПРАВЛЕНИЕ ЗДЕСЬ ---
+// --- ИСПРАВЛЕНИЕ ЗДЕСЬ (1) ---
 // Добавляем недостающий import, который вызвал бы следующую ошибку
 import com.example.mytaskflow.ui.screens.HubViewModel
-// --- КОНЕЦ ИСПРАВЛЕНИЯ ---
+// --- КОНЕЦ ИСПРАВЛЕНИЯ (1) ---
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+// --- ИСПРАВЛЕНИЕ ЗДЕСЬ (2) ---
+// Заменяем старый код-заглушку на полноценный экран
 @Composable
 fun HubScreen(
     modifier: Modifier = Modifier,
@@ -117,3 +119,4 @@ fun HubItemCard(item: HubItem) {
         }
     }
 }
+// --- КОНЕЦ ИСПРАВЛЕНИЯ (2) ---
