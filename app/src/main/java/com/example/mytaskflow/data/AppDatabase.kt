@@ -15,7 +15,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun taskDao(): TaskDao
     abstract fun subTaskDao(): SubTaskDao
     abstract fun habitDao(): HabitDao
-    abstract fun hubDao(): HubDao // --- ИЗМЕНЕНИЕ ---
+    abstract fun hubDao(): HubDao // --- ИЗМЕНЕНИЕ: ЭТА СТРОКА БЫЛА ПРОПУЩЕНА ---
 
     companion object {
         @Volatile
@@ -63,7 +63,6 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
-        // --- ИЗМЕНЕНИЕ ---
         // Миграция с 4 на 5 (добавление таблицы 'hub_items')
         val MIGRATION_4_5 = object : Migration(4, 5) {
             override fun migrate(db: SupportSQLiteDatabase) {
@@ -79,7 +78,6 @@ abstract class AppDatabase : RoomDatabase() {
                 )
             }
         }
-        // --- КОНЕЦ ИЗМЕНЕНИЙ ---
 
 
         fun getDatabase(context: Context): AppDatabase {
@@ -89,9 +87,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "task_database"
                 )
-                    // --- ИЗМЕНЕНИЕ ---
                     .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
-                    // --- КОНЕЦ ИЗМЕНЕНИЙ ---
                     .build()
                     .also { Instance = it }
             }
